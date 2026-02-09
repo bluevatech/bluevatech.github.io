@@ -247,13 +247,27 @@
       e.preventDefault();
       var form = e.target;
       var btn = form.querySelector('button[type="submit"]');
-      btn.textContent = 'Thank you!';
+      btn.textContent = 'Sending...';
       btn.disabled = true;
-      form.reset();
-      setTimeout(function () {
-        btn.textContent = 'Send Message';
-        btn.disabled = false;
-      }, 3000);
+      fetch('https://formspree.io/f/xqedanay', {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      }).then(function (response) {
+        if (response.ok) {
+          btn.textContent = 'Thank you!';
+          form.reset();
+        } else {
+          btn.textContent = 'Error, try again';
+        }
+      }).catch(function () {
+        btn.textContent = 'Error, try again';
+      }).finally(function () {
+        setTimeout(function () {
+          btn.textContent = 'Send Message';
+          btn.disabled = false;
+        }, 3000);
+      });
     }
 
     // Scroll fade-in with IntersectionObserver
